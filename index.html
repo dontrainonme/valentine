@@ -67,6 +67,7 @@ button {
     cursor: pointer;
     position: relative;
     z-index: 10;
+    transition: 0.2s;
 }
 
 #yesBtn { background: white; color: black; }
@@ -192,8 +193,8 @@ let phrases = [
     "You’re pushing it…",
     "Is that the answer of a warrior?",
     "This is embarrassing…",
-    "IM GONNA SHOOT MY SHOT LIKE DEVEN BOOKER WILL YOU SAY YES?…",
-    "MATEOOOOOO NOOOOOO…",
+    "IM GONNA SHOOT MY SHOT LIKE DEVIN BOOKER WILL YOU SAY YES?…",
+    "MATEEEEEOOO NOOOOO…",
     "SUPER SAIYAN MAJIN ME WILL HANDLE THIS!…"
 ];
 
@@ -235,6 +236,10 @@ noBtn.addEventListener("click", function() {
     } else if(noCount === 9){
         vegetaImg.src = "vegeta12.jpg"; // final tease
         question.innerHTML = "There is no escape, Motshi. Press YES.";
+        // Shrink NO button
+        noBtn.style.padding = "8px 16px";
+        noBtn.style.fontSize = "14px";
+        noBtn.style.width = "100px";
         noCount++;
     } else {
         question.innerHTML = "GAMES OVER! KOBEEEE";
@@ -257,7 +262,7 @@ yesBtn.addEventListener("click", function() {
     vegetaImg.src = "vegeta_yes.jpg";
     vegetaImg.classList.add("glow");
     aura.style.display = "none";
-    question.innerHTML = "YAHUUUUUUUUU, HAPPY 38TH MOTSHIII!!! ";
+    question.innerHTML = "YAHUUUUUUUUU, HAPPY 38TH MOTSHIII!!! ❤️";
 
     yesBtn.style.display = "none";
     noBtn.style.display = "none";

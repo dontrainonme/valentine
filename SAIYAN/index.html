@@ -1,1 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Important Question</title>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(ellipse at bottom, #000000 0%, #0f0f0f 100%);
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
 
+#stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: floatStars linear infinite;
+}
+
+@keyframes floatStars {
+    0% { transform: translateY(0); opacity: 0.8; }
+    50% { opacity: 0.5; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+img {
+    width: 260px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    transition: 0.3s ease, transform 0.2s ease;
+    position: relative;
+    z-index: 10;
+}
+
+h1 {
+    font-size: 22px;
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+button {
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+}
+
+#yesBtn { background: white; color: black; }
+#noBtn { background: #444; color: white; }
+
+.glow {
+    box-shadow: 0 0 25px #00f0ff, 0 0 50px #00f0ff, 0 0 75px #00f0ff;
+}
+
+.aura {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: auraPulse 1s infinite;
+    box-shadow: 0 0 50px #00f0ff, 0 0 100px #00f0ff;
+    z-index: 1;
+    display: none;
+}
+
+@keyframes auraPulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+}
+
+.shake {
+    animation: shakeAnim 0.2s;
+}
+@keyframes shakeAnim {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+/* Floating hearts on YES */
+.heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    transform: rotate(45deg);
+    animation: floatHeart 2s linear forwards;
+}
+.heart::after, .heart::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+}
+.heart::before { top: -10px; left: 0; }
+.heart::after { left: 10px; top: 0; }
+
+@keyframes floatHeart {
+    0% { transform: translate(0,0) rotate(45deg); opacity:1; }
+    100% { transform: translate(var(--x), -300px) rotate(45deg); opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+<div class="aura" id="aura"></div>
+
+<img id="vegetaImg" src="vegeta1.jpg">
+<h1 id="question">Will you be my Valentine, Motshi?</h1>
+
+<div>
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
+</div>
+
+<script>
+// Generate stars
+let starsContainer = document.getElementById('stars');
+for(let i=0;i<100;i++){
+    let star = document.createElement('div');
+    star.classList.add('star');
+    let size = Math.random()*3+1;
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+    star.style.left = Math.random()*100 + "%";
+    star.style.top = Math.random()*100 + "%";
+    star.style.animationDuration = (Math.random()*5+5) + "s";
+    starsContainer.appendChild(star);
+}
+
+// Variables
+let vegetaImg = document.getElementById("vegetaImg");
+let question = document.getElementById("question");
+let yesBtn = document.getElementById("yesBtn");
+let noBtn = document.getElementById("noBtn");
+let aura = document.getElementById("aura");
+
+// Sounds
+let noSound = new Audio("click1.mp3");
+let yesSound = new Audio("click2.mp3");
+
+let noCount = 0;
+
+// NO phrases
+let phrases = [
+    "Hmm… interesting choice.",
+    "YOU DARE PRESS NO?",
+    "That’s… disappointing.",
+    "Doesn’t rain for no reason…",
+    "You’re pushing it…",
+    "Is that the answer of a warrior?",
+    "This is embarrassing…",
+    "Now we’re talking…",
+    "You’re breaking the Prince’s heart…",
+    "Every time you say NO…"
+];
+
+function spawnHeart() {
+    let heart = document.createElement('div');
+    heart.classList.add('heart');
+    let x = Math.random()*200-100 + "px";
+    heart.style.setProperty('--x', x);
+    heart.style.left = (window.innerWidth/2 + Math.random()*50-25) + "px";
+    heart.style.top = (window.innerHeight/2 + Math.random()*50-25) + "px";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(), 2000);
+}
+
+// NO button
+noBtn.addEventListener("click", function() {
+    vegetaImg.classList.add("shake");
+    setTimeout(() => vegetaImg.classList.remove("shake"), 200);
+
+    // play NO sound
+    noSound.currentTime = 0;
+    noSound.play();
+
+    if(noCount < 9){
+        noCount++;
+        vegetaImg.src = "vegeta" + (noCount + 1) + ".jpg"; // vegeta1-11
+        question.innerHTML = phrases[noCount];
+        if(noCount === 5) aura.style.display = "block";
+    } else {
+        question.innerHTML = "There is no escape, Motshi. Press YES.";
+    }
+});
+
+// YES button
+yesBtn.addEventListener("click", function() {
+    vegetaImg.src = "vegeta11.jpg"; // final dramatic Vegeta
+    vegetaImg.classList.add("glow");
+    aura.style.display = "none";
+    question.innerHTML = "Good. That is the correct choice, Motshi. ❤️";
+
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    // play YES sound
+    yesSound.currentTime = 0;
+    yesSound.play();
+
+    // Spawn hearts animation
+    for(let i=0;i<30;i++){
+        setTimeout(spawnHeart, i*100);
+    }
+});
+</script>
+
+</body>
+</html>

@@ -148,6 +148,10 @@ button {
     <button id="noBtn">NO</button>
 </div>
 
+<!-- Tap sound -->
+<audio id="tapSound" src="click1.mp3"></audio>
+<audio id="yesSound" src="click2.mp3"></audio>
+
 <script>
 // Generate stars
 let starsContainer = document.getElementById('stars');
@@ -169,14 +173,11 @@ let question = document.getElementById("question");
 let yesBtn = document.getElementById("yesBtn");
 let noBtn = document.getElementById("noBtn");
 let aura = document.getElementById("aura");
-
-// Sounds
-let noSound = new Audio("click1.mp3");
-let yesSound = new Audio("click2.mp3");
+let tapSound = document.getElementById("tapSound");
+let yesSound = document.getElementById("yesSound");
 
 let noCount = 0;
 
-// NO phrases
 let phrases = [
     "Hmm… interesting choice.",
     "YOU DARE PRESS NO?",
@@ -190,39 +191,37 @@ let phrases = [
     "Every time you say NO…"
 ];
 
-function spawnHeart() {
-    let heart = document.createElement('div');
-    heart.classList.add('heart');
-    let x = Math.random()*200-100 + "px";
-    heart.style.setProperty('--x', x);
-    heart.style.left = (window.innerWidth/2 + Math.random()*50-25) + "px";
-    heart.style.top = (window.innerHeight/2 + Math.random()*50-25) + "px";
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(), 2000);
-}
-
 // NO button
 noBtn.addEventListener("click", function() {
+    tapSound.currentTime = 0;
+    tapSound.play();
+
     vegetaImg.classList.add("shake");
     setTimeout(() => vegetaImg.classList.remove("shake"), 200);
-
-    // play NO sound
-    noSound.currentTime = 0;
-    noSound.play();
 
     if(noCount < 9){
         noCount++;
         vegetaImg.src = "vegeta" + (noCount + 1) + ".jpg"; // vegeta1-11
         question.innerHTML = phrases[noCount];
         if(noCount === 5) aura.style.display = "block";
-    } else {
+    } else if(noCount === 9){
+        // final NO tease
+        vegetaImg.src = "vegeta12.jpg";
         question.innerHTML = "There is no escape, Motshi. Press YES.";
+        noCount++;
+    } else {
+        question.innerHTML = "Seriously… just press YES already!";
     }
 });
 
 // YES button
 yesBtn.addEventListener("click", function() {
-    vegetaImg.src = "vegeta11.jpg"; // final dramatic Vegeta
+    tapSound.currentTime = 0;
+    tapSound.play();
+    yesSound.currentTime = 0;
+    yesSound.play();
+
+    vegetaImg.src = "vegeta_yes.jpg"; // your YES image
     vegetaImg.classList.add("glow");
     aura.style.display = "none";
     question.innerHTML = "Good. That is the correct choice, Motshi. ❤️";
@@ -230,13 +229,18 @@ yesBtn.addEventListener("click", function() {
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
-    // play YES sound
-    yesSound.currentTime = 0;
-    yesSound.play();
-
     // Spawn hearts animation
     for(let i=0;i<30;i++){
-        setTimeout(spawnHeart, i*100);
+        setTimeout(() => {
+            let heart = document.createElement('div');
+            heart.classList.add('heart');
+            let x = Math.random()*200-100 + "px";
+            heart.style.setProperty('--x', x);
+            heart.style.left = (window.innerWidth/2 + Math.random()*50-25) + "px";
+            heart.style.top = (window.innerHeight/2 + Math.random()*50-25) + "px";
+            document.body.appendChild(heart);
+            setTimeout(()=>heart.remove(), 2000);
+        }, i*100);
     }
 });
 </script>
